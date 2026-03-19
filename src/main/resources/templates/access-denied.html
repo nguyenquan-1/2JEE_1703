@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Không có quyền truy cập</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            text-align: center;
+            padding-top: 80px;
+        }
+
+        .box {
+            width: 500px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #dc3545;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            background: #0d6efd;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 6px;
+        }
+
+        a:hover {
+            background: #0b5ed7;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h2>Bạn không có quyền truy cập chức năng này</h2>
+    <p>Vui lòng quay lại trang danh sách sách.</p>
+    <a th:href="@{/books}">Quay lại</a>
+</div>
+</body>
+</html>
