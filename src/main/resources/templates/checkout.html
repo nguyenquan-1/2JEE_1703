@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Xác nhận đặt hàng</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f6f9; }
+        .container { width: 90%; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
+        .btn-back { padding: 10px 14px; background-color: #0d6efd; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Đặt hàng thành công</h2>
+    <p>Mã đơn hàng: <strong th:text="${order.id}"></strong></p>
+    <p>Thời gian: <strong th:text="${order.createdAt}"></strong></p>
+    <p>Tổng tiền: <strong th:text="${totalAmount}"></strong></p>
+
+    <a class="btn-back" th:href="@{/books}">Về trang sách</a>
+</div>
+</body>
+</html>

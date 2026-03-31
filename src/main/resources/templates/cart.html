@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Giỏ hàng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f4f6f9;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1f2d3d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #343a40;
+            color: white;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-back { background: #6c757d; }
+        .btn-remove { background: #dc3545; }
+        .btn-update { background: #0d6efd; }
+        .btn-checkout { background: #198754; }
+
+        .actions {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        input[type="number"] {
+            width: 70px;
+            padding: 6px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>GIỎ HÀNG</h2>
+
+    <div th:if="${param.success}">
+        <p style="color:green; font-weight:bold;">Đặt hàng thành công!</p>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Tên sách</th>
+            <th>Giá</th>
+            <th>Số lượng</th>
+            <th>Tổng tiền</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${cart}">
+            <td th:text="${item.title}"></td>
+            <td th:text="${item.price}"></td>
+            <td>
+                <form th:action="@{/cart/update}" method="post">
+                    <input type="hidden" name="bookId" th:value="${item.bookId}">
+                    <input type="number" name="quantity" min="1" th:value="${item.quantity}">
+                    <button type="submit" class="btn btn-update">Cập nhật</button>
+                </form>
+            </td>
+            <td th:text="${item.subtotal}"></td>
+            <td>
+                <a class="btn btn-remove" th:href="@{'/cart/remove/' + ${item.bookId}}">Xóa</a>
+            </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(cart)}">
+            <td colspan="5">Giỏ hàng đang trống</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 style="text-align:right; margin-top:20px;">
+        Tổng cộng: <span th:text="${total}"></span>
+    </h3>
+
+    <div class="actions">
+        <a class="btn btn-back" th:href="@{/books}">Quay lại</a>
+        <form th:if="${not #lists.isEmpty(cart)}" th:action="@{/checkout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-checkout">Đặt hàng</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

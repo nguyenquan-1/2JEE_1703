@@ -38,7 +38,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/", "/books").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/", "/books", "/cart/**", "/checkout").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/books/new", "/books/save", "/books/edit/**", "/books/delete/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

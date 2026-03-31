@@ -100,6 +100,10 @@
         <label for="publisher">Nhà xuất bản</label>
         <input type="text" id="publisher" th:field="*{publisher}">
 
+        <label for="category">Category</label>
+        <input type="text" id="category" th:field="*{category}">
+        <div class="error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+
         <label for="quantity">Số lượng</label>
         <input type="number" id="quantity" th:field="*{quantity}">
         <div class="error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>

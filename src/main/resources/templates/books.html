@@ -18,7 +18,7 @@
         }
 
         .container {
-            width: 90%;
+            width: 95%;
             margin: auto;
             background: white;
             padding: 20px;
@@ -26,7 +26,7 @@
             box-shadow: 0 0 8px rgba(0,0,0,0.1);
         }
 
-        .top-bar {
+        .top-bar, .filter-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -40,19 +40,20 @@
             color: #1f2d3d;
         }
 
-        .btn-add {
+        .btn-add, .btn-cart, .btn-search, .btn-page {
             display: inline-block;
             padding: 10px 16px;
-            background-color: #0d6efd;
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            margin-bottom: 15px;
+            border: none;
+            cursor: pointer;
         }
 
-        .btn-add:hover {
-            background-color: #0b5ed7;
-        }
+        .btn-add { background-color: #0d6efd; }
+        .btn-cart { background-color: #fd7e14; }
+        .btn-search { background-color: #198754; }
+        .btn-page { background-color: #6c757d; }
 
         .logout-form {
             display: inline;
@@ -67,8 +68,10 @@
             cursor: pointer;
         }
 
-        .btn-logout:hover {
-            background-color: #157347;
+        input, select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         table {
@@ -92,28 +95,30 @@
             background-color: #f8f9fa;
         }
 
-        .btn-edit {
+        .btn-edit, .btn-delete, .btn-add-cart {
             padding: 6px 12px;
-            background-color: #6c757d;
             color: white;
             text-decoration: none;
             border-radius: 4px;
+            border: none;
+            cursor: pointer;
         }
 
-        .btn-delete {
-            padding: 6px 12px;
-            background-color: #dc3545;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
+        .btn-edit { background-color: #6c757d; }
+        .btn-delete { background-color: #dc3545; }
+        .btn-add-cart { background-color: #20c997; }
+
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
         }
 
-        .btn-edit:hover {
-            background-color: #5c636a;
+        .pagination a, .pagination span {
+            margin: 0 5px;
         }
 
-        .btn-delete:hover {
-            background-color: #bb2d3b;
+        form.inline-form {
+            display: inline-block;
         }
     </style>
 </head>
@@ -126,12 +131,36 @@
             Xin chào, <span sec:authentication="name"></span>
         </div>
 
-        <form class="logout-form" th:action="@{/logout}" method="post">
-            <button class="btn-logout" type="submit">Đăng xuất</button>
-        </form>
+        <div>
+            <a class="btn-cart" th:href="@{/cart}">Giỏ hàng</a>
+            <form class="logout-form" th:action="@{/logout}" method="post">
+                <button class="btn-logout" type="submit">Đăng xuất</button>
+            </form>
+        </div>
     </div>
 
     <a class="btn-add" th:href="@{/books/new}" sec:authorize="hasRole('ADMIN')">Thêm sách mới</a>
+
+    <form th:action="@{/books}" method="get" class="filter-bar">
+        <input type="text" name="keyword" placeholder="Nhập tên sách..." th:value="${keyword}">
+
+        <select name="category">
+            <option value="">-- Chọn category --</option>
+            <option th:each="c : ${categories}"
+                    th:value="${c}"
+                    th:text="${c}"
+                    th:selected="${c == category}">
+            </option>
+        </select>
+
+        <select name="sort">
+            <option value="">-- Sắp xếp --</option>
+            <option value="priceAsc" th:selected="${sort == 'priceAsc'}">Giá tăng dần</option>
+            <option value="priceDesc" th:selected="${sort == 'priceDesc'}">Giá giảm dần</option>
+        </select>
+
+        <button type="submit" class="btn-search">Tìm kiếm</button>
+    </form>
 
     <table>
         <thead>
@@ -141,6 +170,7 @@
             <th>Tác giả</th>
             <th>Giá</th>
             <th>Nhà xuất bản</th>
+            <th>Category</th>
             <th>Số lượng</th>
             <th>Hành động</th>
         </tr>
@@ -152,6 +182,7 @@
             <td th:text="${book.author}"></td>
             <td th:text="${book.price}"></td>
             <td th:text="${book.publisher}"></td>
+            <td th:text="${book.category}"></td>
             <td th:text="${book.quantity}"></td>
             <td>
                 <a class="btn-edit"
@@ -162,14 +193,35 @@
                    th:href="@{'/books/delete/' + ${book.id}}"
                    sec:authorize="hasRole('ADMIN')"
                    onclick="return confirm('Bạn có chắc muốn xóa sách này không?')">Xóa</a>
+
+                <form class="inline-form" th:action="@{'/cart/add/' + ${book.id}}" method="post">
+                    <input type="number" name="quantity" value="1" min="1" style="width:60px;">
+                    <button type="submit" class="btn-add-cart">Thêm giỏ</button>
+                </form>
             </td>
         </tr>
 
         <tr th:if="${#lists.isEmpty(listBooks)}">
-            <td colspan="7">Chưa có dữ liệu sách</td>
+            <td colspan="8">Chưa có dữ liệu sách</td>
         </tr>
         </tbody>
     </table>
+
+    <div class="pagination" th:if="${totalPages > 0}">
+        <a class="btn-page"
+           th:if="${currentPage > 0}"
+           th:href="@{/books(page=${currentPage - 1}, keyword=${keyword}, category=${category}, sort=${sort})}">
+            Previous
+        </a>
+
+        <span>Trang <b th:text="${currentPage + 1}"></b> / <b th:text="${totalPages}"></b></span>
+
+        <a class="btn-page"
+           th:if="${currentPage + 1 < totalPages}"
+           th:href="@{/books(page=${currentPage + 1}, keyword=${keyword}, category=${category}, sort=${sort})}">
+            Next
+        </a>
+    </div>
 </div>
 </body>
 </html>

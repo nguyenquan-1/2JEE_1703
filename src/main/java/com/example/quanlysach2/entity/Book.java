@@ -34,16 +34,21 @@ public class Book {
     @Column(name = "quantity")
     private Integer quantity;
 
+    @NotBlank(message = "Category không được để trống")
+    @Column(name = "category", length = 100)
+    private String category;
+
     public Book() {
     }
 
-    public Book(Integer id, String title, String author, Double price, String publisher, Integer quantity) {
+    public Book(Integer id, String title, String author, Double price, String publisher, Integer quantity, String category) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.price = price;
         this.publisher = publisher;
         this.quantity = quantity;
+        this.category = category;
     }
 
     public Integer getId() {
@@ -92,5 +97,13 @@ public class Book {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
